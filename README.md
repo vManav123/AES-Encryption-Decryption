@@ -13,13 +13,14 @@ We have following 3 steps to achieve password encryption and decryption
 Generating random key which is being used to encrypt and decrypt password
 
 ```javascript
-package com.narayanatutorial.password;
+package com.company;
+
 
 import java.security.NoSuchAlgorithmException;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
-public class GenerateKey {
+class GenerateKey {
     public static final String AES = "AES";
     private static String byteArrayToHexString(byte[] b) {
         StringBuffer sb = new StringBuffer(b.length * 2);
@@ -43,12 +44,13 @@ public class GenerateKey {
         return b;
     }
 
-    public static void main(String args[]) throws NoSuchAlgorithmException {
+    public static String generateKey() throws NoSuchAlgorithmException {
         KeyGenerator keyGen = KeyGenerator.getInstance(GenerateKey.AES);
         keyGen.init(128);
         SecretKey sk = keyGen.generateKey();
         String key = byteArrayToHexString(sk.getEncoded());
-        System.out.println("key:" + key);
+        System.out.println("Key : "+key);
+        return key;
     }
 }
 ```
@@ -61,7 +63,8 @@ key:F21E2A7FB6C68037FAEAA55222E320F7
 Generate Encrypted Password from plain text password , we will generate encrypted password using above generated key.
 
 ```javascript
-package com.narayanatutorial.password;
+package com.company;
+
 
 import java.io.IOException;
 import java.io.StreamTokenizer;
@@ -75,8 +78,8 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
-public class GenerateEncryptionPassword {
 
+public class GenerateEncryptionPassword {
     public static final String AES = "AES";
 
     private static String byteArrayToHexString(byte[] b) {
@@ -101,26 +104,21 @@ public class GenerateEncryptionPassword {
         return b;
     }
 
-    public static void main(String args[]) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException {
+    public static String generateEncryptedPassword(String password,String key) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, IOException {
         //String key = "DB99A2A8EB6904F492E9DF0595ED683C";
         //String password = "Admin";
 
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Please Enter Key:");
-        String key = scanner.next();
-        System.out.println("Please Enter Plain Text Password:");
-        String password = scanner.next();
 
         byte[] bytekey = hexStringToByteArray(key);
         SecretKeySpec sks = new SecretKeySpec(bytekey, GenerateEncryptionPassword.AES);
         Cipher cipher = Cipher.getInstance(GenerateEncryptionPassword.AES);
         cipher.init(Cipher.ENCRYPT_MODE, sks, cipher.getParameters());
         byte[] encrypted = cipher.doFinal(password.getBytes());
-        String encryptedpwd = byteArrayToHexString(encrypted);
+        String encryptedPwd = byteArrayToHexString(encrypted);
         System.out.println("****************  Encrypted Password  ****************");
-        System.out.println(encryptedpwd);
+        System.out.println("Encrypted Password : "+encryptedPwd);
         System.out.println("****************  Encrypted Password  ****************");
-
+        return encryptedPwd;
     }
 }
 ```
